@@ -90,12 +90,16 @@
 
             Array.from(cells).forEach(cell => {
                 cell.addEventListener('click', () => {
-                    cell.classList.toggle('selected');
-                    saveState();
-                    updateTotal();
+                    const cellValue = parseFloat(cell.textContent);
+                    const isSelected = cell.classList.contains('selected');
+
+                    if (confirm(`Deseja ${isSelected ? 'remover' : 'adicionar'} a célula ${cellValue}?`)) {
+                        cell.classList.toggle('selected');
+                        saveState();
+                        updateTotal();
+                    }
                 });
             });
-
             function saveState() {
                 const selectedCells = Array.from(cells)
                     .filter(cell => cell.classList.contains('selected'))
