@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela de Números</title>
+    <!-- Link para o CSS do Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+            color: #333;
+            font-size: 20px !important;
+        }
+
+        table td {
+            cursor: pointer;
+        }
+
+        .selected {
+            background-color: rgb(29, 208, 29) !important;
+            color: white !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">TABELA PARA CASAR</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center" id="numberTable">
+                <thead class="table-dark">
+                    <tr>
+                        <th colspan="10">ATÉ AQUI O SENHOR NOS AJUDOU! </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- O conteúdo da tabela será gerado dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script JS do Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tableBody = document.querySelector('#numberTable tbody');
+            const rows = 20;
+            const cols = 10;
+
+            // Construir o conteúdo da tabela
+            let tableContent = '';
+            for (let row = 1; row <= rows; row++) {
+                tableContent += '<tr>';
+                for (let col = 1; col <= cols; col++) {
+                    const cellId = (row - 1) * cols + col;
+                    tableContent += `<td id="cell-${cellId}">${cellId}</td>`;
+                }
+                tableContent += '</tr>';
+            }
+            tableBody.innerHTML = tableContent;
+
+            const cells = tableBody.getElementsByTagName('td');
+
+            // Carregar estados salvos do localStorage
+            const savedStates = JSON.parse(localStorage.getItem('selectedCells')) || [];
+            savedStates.forEach(cellId => {
+                const cell = document.getElementById(cellId);
+                if (cell) {
+                    cell.classList.add('selected');
+                }
+            });
+
+            Array.from(cells).forEach(cell => {
+                cell.addEventListener('click', () => {
+                    cell.classList.toggle('selected');
+                    saveState();
+                });
+            });
+
+            function saveState() {
+                const selectedCells = Array.from(cells)
+                    .filter(cell => cell.classList.contains('selected'))
+                    .map(cell => cell.id);
+                localStorage.setItem('selectedCells', JSON.stringify(selectedCells));
+            }
+        });
+    </script>
+</body>
+
+</html>
