@@ -20,6 +20,10 @@
             cursor: pointer;
         }
 
+        table th {
+            line-height: 50px;
+        }
+
         .selected {
             background-color: rgb(29, 208, 29) !important;
             color: white !important;
@@ -29,13 +33,18 @@
 </head>
 
 <body>
+
     <div class="container mt-5">
-        <h1 class="text-center mb-4">TABELA PARA CASAR</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-striped text-center" id="numberTable">
                 <thead class="table-dark">
                     <tr>
-                        <th colspan="10">ATÉ AQUI O SENHOR NOS AJUDOU! </th>
+                        <th colspan="5">ATÉ AQUI O SENHOR NOS AJUDOU</th>
+                        <th colspan="5">
+                            <div class="mt-3">
+                                <h3>Total Selecionado: <span id="totalAmount">R$ 0,00</span></h3>
+                            </div>
+                        </th>
 
                     </tr>
                 </thead>
@@ -44,6 +53,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
     <!-- Script JS do Bootstrap -->
@@ -67,6 +77,7 @@
             tableBody.innerHTML = tableContent;
 
             const cells = tableBody.getElementsByTagName('td');
+            const totalAmountSpan = document.getElementById('totalAmount');
 
             // Carregar estados salvos do localStorage
             const savedStates = JSON.parse(localStorage.getItem('selectedCells')) || [];
@@ -81,6 +92,7 @@
                 cell.addEventListener('click', () => {
                     cell.classList.toggle('selected');
                     saveState();
+                    updateTotal();
                 });
             });
 
@@ -90,6 +102,19 @@
                     .map(cell => cell.id);
                 localStorage.setItem('selectedCells', JSON.stringify(selectedCells));
             }
+
+            function updateTotal() {
+                const selectedCells = Array.from(cells)
+                    .filter(cell => cell.classList.contains('selected'));
+                const total = selectedCells.reduce((sum, cell) => {
+                    const cellValue = parseFloat(cell.textContent);
+                    return sum + cellValue;
+                }, 0);
+                totalAmountSpan.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            }
+
+            // Atualizar o total ao carregar a página
+            updateTotal();
         });
     </script>
 </body>
