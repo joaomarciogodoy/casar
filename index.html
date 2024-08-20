@@ -29,6 +29,11 @@
             color: white !important;
             font-weight: bold;
         }
+
+        .not-selected {
+            background-color: red !important;
+            color: white;
+        }
     </style>
 </head>
 
@@ -89,23 +94,29 @@
             });
 
             Array.from(cells).forEach(cell => {
-                cell.addEventListener('click', () => {
-                    const cellValue = parseFloat(cell.textContent);
-                    const isSelected = cell.classList.contains('selected');
+                const cellValue = parseFloat(cell.textContent);
 
-                    if (confirm(`Deseja ${isSelected ? 'remover' : 'adicionar'} a célula ${cellValue}?`)) {
+                // Adiciona a classe 'not-selected' inicialmente
+                cell.classList.add('not-selected');
+
+                cell.addEventListener('click', () => {
+                    if (confirm(`Deseja ${cell.classList.contains('selected') ? 'remover' : 'adicionar'} a célula ${cellValue}?`)) {
                         cell.classList.toggle('selected');
+                        cell.classList.toggle('not-selected');
                         saveState();
                         updateTotal();
                     }
                 });
             });
+
+
             function saveState() {
                 const selectedCells = Array.from(cells)
                     .filter(cell => cell.classList.contains('selected'))
                     .map(cell => cell.id);
                 localStorage.setItem('selectedCells', JSON.stringify(selectedCells));
             }
+
 
             function updateTotal() {
                 const selectedCells = Array.from(cells)
